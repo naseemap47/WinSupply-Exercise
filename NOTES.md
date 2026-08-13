@@ -192,3 +192,24 @@ For example:
         "nodes": 9
     }
 }
+```
+## Failed Cases
+
+1. On sheet 3, I am able to extract the curved part, but for the 45 degree angle pipe, it breaks into multiple small segments.
+2. Need to find best threshold values to improve the extraction accuracy. but not sure same values will works for all sheets.
+3. If the pipe are in different angles other that 90 or 180, the extraction may not be accurate.
+4. If the ROI image is not cropped properly, it may extract other elements in the image.
+5. If we pass full images to the pipeline extraction algorithm, it will extract other elements in the image.
+6. If this solution need roi marking manually, it will not be a good solution for a real time application.
+7. for joint angles, we can use angle detection algorithm to detect the angle between two lines, but it requires tuning threshold values to improve the accuracy.
+
+## Improvements
+If we have more time for R&D and experiments, we could explore the following options:
+
+1. Train detection/segmentation models for find the ROI of the sheets. so that we can crop the ROI of the sheets automatically.
+2. Improve the pipeline extraction accuracy by using deep learning models.
+3. Tune the parameters of the pipeline extraction algorithm to improve the accuracy.
+4. Add support for other formats of engineering drawings.
+5. We can try keypoint detection model to detect pipelines, if this works we no need of skeletonization. 
+    And also this is good for 45 degree angle pipes and curved pipes.
+6. Try to use Hough lines for 45 degree angle pipes and vertical pipes, but it requires tuning threshold values to improve the accuracy.
