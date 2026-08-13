@@ -1,0 +1,12 @@
+*.pyc
+__pycache__/
+.pytest_cache/
+.venv/
+.env
+debug/
+rois/
+runs/
+sheets/
+
+# experiments
+experiments.py
