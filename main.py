@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 import cv2
 import csv
 import numpy as np
@@ -21,9 +23,7 @@ def cropped_polygon(
             Polygon points in crop-local coordinates.
     """
 
-    # ---------------------------------------------------------
     # Load image
-    # ---------------------------------------------------------
     image = cv2.imread(image_path)
 
     if image is None:
@@ -33,9 +33,7 @@ def cropped_polygon(
 
     image_h, image_w = image.shape[:2]
 
-    # ---------------------------------------------------------
     # Read polygon points
-    # ---------------------------------------------------------
     points = []
 
     with open(csv_path, "r", newline="") as f:
@@ -59,9 +57,7 @@ def cropped_polygon(
         dtype=np.int32
     )
 
-    # ---------------------------------------------------------
     # Keep points inside image
-    # ---------------------------------------------------------
     points[:, 0] = np.clip(
         points[:, 0],
         0,
@@ -74,34 +70,26 @@ def cropped_polygon(
         image_h - 1
     )
 
-    # ---------------------------------------------------------
     # Bounding box
-    # ---------------------------------------------------------
     x_min = np.min(points[:, 0])
     y_min = np.min(points[:, 1])
 
     x_max = np.max(points[:, 0])
     y_max = np.max(points[:, 1])
 
-    # ---------------------------------------------------------
     # Crop
-    # ---------------------------------------------------------
     cropped = image[
         y_min:y_max + 1,
         x_min:x_max + 1
     ].copy()
 
-    # ---------------------------------------------------------
     # Convert polygon points to crop coordinates
-    # ---------------------------------------------------------
     crop_points = points.copy()
 
     crop_points[:, 0] -= x_min
     crop_points[:, 1] -= y_min
 
-    # ---------------------------------------------------------
     # Create polygon mask
-    # ---------------------------------------------------------
     mask = np.zeros(
         cropped.shape[:2],
         dtype=np.uint8
@@ -113,12 +101,7 @@ def cropped_polygon(
         255
     )
 
-    # ---------------------------------------------------------
     # Keep polygon area
-    #
-    # IMPORTANT:
-    # Make outside WHITE, not black.
-    # ---------------------------------------------------------
     polygon_crop = np.full_like(
         cropped,
         255
@@ -142,18 +125,14 @@ def preprocess(
             background = 0
     """
 
-    # ---------------------------------------------------------
     # Reduce small scanning noise
-    # ---------------------------------------------------------
     blurred = cv2.GaussianBlur(
         gray,
         (3, 3),
         0
     )
 
-    # ---------------------------------------------------------
     # Threshold dark engineering lines
-    # ---------------------------------------------------------
     _, binary = cv2.threshold(
         blurred,
         threshold,
@@ -161,9 +140,7 @@ def preprocess(
         cv2.THRESH_BINARY_INV
     )
 
-    # ---------------------------------------------------------
     # Remove tiny isolated noise
-    # ---------------------------------------------------------
     kernel = cv2.getStructuringElement(
         cv2.MORPH_ELLIPSE,
         (2, 2)
@@ -248,43 +225,33 @@ def detect_graph_nodes(skeleton, degree):
 
     skeleton = (skeleton > 0).astype(np.uint8)
 
-    # =========================================================
     # 1. Endpoint mask
-    # =========================================================
     endpoint_mask = (
         (skeleton > 0) &
         (degree == 1)
     ).astype(np.uint8)
 
-    # =========================================================
     # 2. Junction mask
-    # =========================================================
     junction_mask = (
         (skeleton > 0) &
         (degree >= 3)
     ).astype(np.uint8)
 
-    # =========================================================
     # 3. Group connected endpoint pixels
-    # =========================================================
     num_endpoints, endpoint_labels, endpoint_stats, endpoint_centroids = \
         cv2.connectedComponentsWithStats(
             endpoint_mask,
             connectivity=8
         )
 
-    # =========================================================
     # 4. Group connected junction pixels
-    # =========================================================
     num_junctions, junction_labels, junction_stats, junction_centroids = \
         cv2.connectedComponentsWithStats(
             junction_mask,
             connectivity=8
         )
 
-    # =========================================================
     # 5. Output structures
-    # =========================================================
     node_labels = {}
 
     endpoints = []
@@ -292,10 +259,7 @@ def detect_graph_nodes(skeleton, degree):
 
     node_id = 0
 
-    # =========================================================
-    # Helper:
     # Find nearest skeleton pixel to centroid
-    # =========================================================
     skeleton_yx = np.column_stack(
         np.where(skeleton > 0)
     )
@@ -328,9 +292,7 @@ def detect_graph_nodes(skeleton, degree):
 
         return (x, y)
 
-    # =========================================================
     # 6. Endpoints
-    # =========================================================
     for label in range(
         1,
         num_endpoints
@@ -352,9 +314,7 @@ def detect_graph_nodes(skeleton, degree):
 
         node_id += 1
 
-    # =========================================================
     # 7. Junctions
-    # =========================================================
     for label in range(
         1,
         num_junctions
@@ -403,30 +363,23 @@ def build_pixel_graph(skeleton):
 
     G = nx.Graph()
 
-    # ---------------------------------------------------------
     # Get skeleton pixels
-    # ---------------------------------------------------------
     ys, xs = np.where(skeleton > 0)
 
     skeleton_pixels = set(
         zip(xs, ys)
     )
 
-    # ---------------------------------------------------------
     # Add nodes
-    # ---------------------------------------------------------
     for x, y in skeleton_pixels:
 
         G.add_node(
             (x, y)
         )
 
-    # ---------------------------------------------------------
     # 8-neighborhood
-    #
     # Only use forward neighbors to avoid adding
     # the same edge twice.
-    # ---------------------------------------------------------
     neighbors = [
         (1, 0),
         (0, 1),
@@ -434,9 +387,7 @@ def build_pixel_graph(skeleton):
         (-1, 1),
     ]
 
-    # ---------------------------------------------------------
     # Add edges
-    # ---------------------------------------------------------
     for x, y in skeleton_pixels:
 
         for dx, dy in neighbors:
@@ -452,9 +403,7 @@ def build_pixel_graph(skeleton):
             if neighbor not in skeleton_pixels:
                 continue
 
-            # -------------------------------------------------
             # Euclidean pixel distance
-            # -------------------------------------------------
             if dx == 0 or dy == 0:
                 length = 1.0
             else:
@@ -482,9 +431,7 @@ def extract_directional_candidates(
         vertical
     """
 
-    # ---------------------------------------------------------
     # Horizontal lines
-    # ---------------------------------------------------------
     h_kernel = cv2.getStructuringElement(
         cv2.MORPH_RECT,
         (horizontal_length, 1)
@@ -496,9 +443,7 @@ def extract_directional_candidates(
         h_kernel
     )
 
-    # ---------------------------------------------------------
     # Vertical lines
-    # ---------------------------------------------------------
     v_kernel = cv2.getStructuringElement(
         cv2.MORPH_RECT,
         (1, vertical_length)
@@ -524,18 +469,14 @@ def make_single_centerline_mask(
     filled regions suitable for skeletonization.
     """
 
-    # =========================================================
     # 1. Extract horizontal structures
-    # =========================================================
     horizontal, vertical = extract_directional_candidates(
         binary,
         horizontal_length=horizontal_length,
         vertical_length=vertical_length
     )
 
-    # =========================================================
     # 2. Fill horizontal pipe boundaries
-    # =========================================================
     h_kernel = cv2.getStructuringElement(
         cv2.MORPH_RECT,
         (3, gap_size)
@@ -547,9 +488,7 @@ def make_single_centerline_mask(
         h_kernel
     )
 
-    # =========================================================
     # 3. Fill vertical pipe boundaries
-    # =========================================================
     v_kernel = cv2.getStructuringElement(
         cv2.MORPH_RECT,
         (gap_size, 3)
@@ -561,17 +500,13 @@ def make_single_centerline_mask(
         v_kernel
     )
 
-    # =========================================================
     # 4. Combine
-    # =========================================================
     filled = cv2.bitwise_or(
         horizontal_filled,
         vertical_filled
     )
 
-    # =========================================================
     # 5. Small morphological cleanup
-    # =========================================================
     cleanup_kernel = cv2.getStructuringElement(
         cv2.MORPH_ELLIPSE,
         (3, 3)
@@ -602,9 +537,7 @@ def calculate_pipeline_results(
         )
     )
 
-    # ---------------------------------------------------------
     # Map pixel -> logical node
-    # ---------------------------------------------------------
 
     component_nodes = {}
 
@@ -625,9 +558,7 @@ def calculate_pipeline_results(
 
                 break
 
-    # ---------------------------------------------------------
     # Calculate component lengths
-    # ---------------------------------------------------------
 
     pipeline_id = 1
 
@@ -673,10 +604,6 @@ def calculate_pipeline_results(
 
     return results
 
-import json
-from pathlib import Path
-
-
 def save_json(
     results,
     output_path,
@@ -718,25 +645,12 @@ def draw_skeleton_overlay(
 
     overlay = image.copy()
 
-    # ---------------------------------------------------------
     # Draw centerline
-    # ---------------------------------------------------------
-    ys, xs = np.where(
-        skeleton
-    )
+    ys, xs = np.where(skeleton)
 
-    overlay[
-        ys,
-        xs
-    ] = (
-        0,
-        255,
-        0
-    )
+    overlay[ys, xs] = (0, 255, 0)
 
-    # ---------------------------------------------------------
     # Endpoints
-    # ---------------------------------------------------------
     if endpoints is not None:
 
         for x, y in endpoints:
@@ -749,9 +663,7 @@ def draw_skeleton_overlay(
                 -1
             )
 
-    # ---------------------------------------------------------
     # Junctions
-    # ---------------------------------------------------------
     if junctions is not None:
 
         for x, y in junctions:
