@@ -1,5 +1,7 @@
 import cv2
 import csv
+import os
+import argparse
 
 
 def draw_polygon_and_save(image_path, csv_path):
@@ -17,9 +19,7 @@ def draw_polygon_and_save(image_path, csv_path):
         ESC         -> Exit
     """
 
-    # ---------------------------------------------------------
     # Load original image
-    # ---------------------------------------------------------
     image = cv2.imread(image_path)
 
     if image is None:
@@ -29,9 +29,7 @@ def draw_polygon_and_save(image_path, csv_path):
 
     print(f"Original image size: {original_w} x {original_h}")
 
-    # ---------------------------------------------------------
     # Get screen resolution
-    # ---------------------------------------------------------
     screen_width = 1920
     screen_height = 1080
 
@@ -43,9 +41,7 @@ def draw_polygon_and_save(image_path, csv_path):
         cv2.WINDOW_FULLSCREEN
     )
 
-    # ---------------------------------------------------------
     # Calculate scaling factor
-    # ---------------------------------------------------------
     scale_x = screen_width / original_w
     scale_y = screen_height / original_h
 
@@ -61,9 +57,7 @@ def draw_polygon_and_save(image_path, csv_path):
     print(f"Display image size: {display_w} x {display_h}")
     print(f"Scale: {scale:.6f}")
 
-    # ---------------------------------------------------------
     # Resize image for display
-    # ---------------------------------------------------------
     display_image = cv2.resize(
         image,
         (display_w, display_h),
@@ -79,9 +73,7 @@ def draw_polygon_and_save(image_path, csv_path):
     points = []
     need_redraw = True
 
-    # ---------------------------------------------------------
     # Mouse callback
-    # ---------------------------------------------------------
     def mouse_callback(event, x, y, flags, param):
 
         nonlocal display_image, need_redraw
@@ -170,9 +162,7 @@ def draw_polygon_and_save(image_path, csv_path):
 
                 need_redraw = True
 
-    # ---------------------------------------------------------
     # Register mouse callback
-    # ---------------------------------------------------------
     cv2.setMouseCallback(
         "Draw Polygon",
         mouse_callback
@@ -184,9 +174,7 @@ def draw_polygon_and_save(image_path, csv_path):
     print("  ENTER       -> Save polygon")
     print("  ESC         -> Exit")
 
-    # ---------------------------------------------------------
     # Main loop
-    # ---------------------------------------------------------
     while True:
 
         if need_redraw:
@@ -382,14 +370,21 @@ def apply_roi_mask(image, points, crop_to_bbox=True, save_crop_path=None):
     return masked
 
 
-
-# =============================================================
-# Main Execution Example
-# =============================================================
 if __name__ == "__main__":
-    import os
     os.makedirs("rois", exist_ok=True)
+    args = argparse.ArgumentParser(
+        description="Draw polygon on image"
+    )
+    args.add_argument(
+        "--image",
+        "-i",
+        type=str,
+        required=True,
+        help="Path to image"
+    )
+    args = args.parse_args()
+    csv_path = "rois/" + args.image.split("/")[-1].split(".")[0] + ".csv"
     draw_polygon_and_save(
-        "sheets/sheet_01.png",
-        "rois/sheet_01.csv"
+        args.image,
+        csv_path
     )

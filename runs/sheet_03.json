@@ -1,278 +1,46 @@
 {
   "pipeline_1": {
-    "length": 20913.08,
-    "nodes": 79
+    "length": 1518.81,
+    "nodes": 19
   },
   "pipeline_2": {
-    "length": 1277.41,
-    "nodes": 7
+    "length": 165.28,
+    "nodes": 5
   },
   "pipeline_3": {
-    "length": 1141.75,
-    "nodes": 130
+    "length": 177.98,
+    "nodes": 5
   },
   "pipeline_4": {
-    "length": 1130.83,
-    "nodes": 51
+    "length": 142.14,
+    "nodes": 5
   },
   "pipeline_5": {
-    "length": 1107.67,
-    "nodes": 12
+    "length": 115.66,
+    "nodes": 5
   },
   "pipeline_6": {
-    "length": 953.76,
-    "nodes": 8
+    "length": 58.66,
+    "nodes": 2
   },
   "pipeline_7": {
-    "length": 815.87,
-    "nodes": 30
+    "length": 146.8,
+    "nodes": 5
   },
   "pipeline_8": {
-    "length": 629.92,
-    "nodes": 14
+    "length": 121.66,
+    "nodes": 5
   },
   "pipeline_9": {
-    "length": 522.63,
-    "nodes": 36
+    "length": 54.0,
+    "nodes": 2
   },
   "pipeline_10": {
-    "length": 516.22,
-    "nodes": 27
+    "length": 50.0,
+    "nodes": 2
   },
   "pipeline_11": {
-    "length": 514.97,
-    "nodes": 30
-  },
-  "pipeline_12": {
-    "length": 504.38,
-    "nodes": 19
-  },
-  "pipeline_13": {
-    "length": 443.97,
-    "nodes": 42
-  },
-  "pipeline_14": {
-    "length": 401.02,
-    "nodes": 39
-  },
-  "pipeline_15": {
-    "length": 396.97,
-    "nodes": 34
-  },
-  "pipeline_16": {
-    "length": 391.44,
-    "nodes": 45
-  },
-  "pipeline_17": {
-    "length": 378.31,
-    "nodes": 7
-  },
-  "pipeline_18": {
-    "length": 369.01,
-    "nodes": 65
-  },
-  "pipeline_19": {
-    "length": 368.41,
-    "nodes": 28
-  },
-  "pipeline_20": {
-    "length": 343.02,
-    "nodes": 28
-  },
-  "pipeline_21": {
-    "length": 313.07,
-    "nodes": 18
-  },
-  "pipeline_22": {
-    "length": 278.85,
-    "nodes": 24
-  },
-  "pipeline_23": {
-    "length": 257.55,
-    "nodes": 9
-  },
-  "pipeline_24": {
-    "length": 253.49,
-    "nodes": 7
-  },
-  "pipeline_25": {
-    "length": 231.44,
-    "nodes": 25
-  },
-  "pipeline_26": {
-    "length": 230.72,
-    "nodes": 21
-  },
-  "pipeline_27": {
-    "length": 228.36,
-    "nodes": 19
-  },
-  "pipeline_28": {
-    "length": 211.99,
-    "nodes": 9
-  },
-  "pipeline_29": {
-    "length": 211.4,
-    "nodes": 21
-  },
-  "pipeline_30": {
-    "length": 203.41,
-    "nodes": 46
-  },
-  "pipeline_31": {
-    "length": 202.64,
-    "nodes": 12
-  },
-  "pipeline_32": {
-    "length": 202.24,
-    "nodes": 17
-  },
-  "pipeline_33": {
-    "length": 190.41,
-    "nodes": 9
-  },
-  "pipeline_34": {
-    "length": 190.3,
-    "nodes": 13
-  },
-  "pipeline_35": {
-    "length": 187.47,
-    "nodes": 20
-  },
-  "pipeline_36": {
-    "length": 183.24,
-    "nodes": 12
-  },
-  "pipeline_37": {
-    "length": 178.11,
-    "nodes": 9
-  },
-  "pipeline_38": {
-    "length": 168.73,
-    "nodes": 21
-  },
-  "pipeline_39": {
-    "length": 156.31,
-    "nodes": 24
-  },
-  "pipeline_40": {
-    "length": 150.57,
-    "nodes": 11
-  },
-  "pipeline_41": {
-    "length": 148.53,
-    "nodes": 9
-  },
-  "pipeline_42": {
-    "length": 146.31,
-    "nodes": 11
-  },
-  "pipeline_43": {
-    "length": 140.11,
-    "nodes": 14
-  },
-  "pipeline_44": {
-    "length": 139.83,
-    "nodes": 4
-  },
-  "pipeline_45": {
-    "length": 136.36,
-    "nodes": 9
-  },
-  "pipeline_46": {
-    "length": 130.73,
-    "nodes": 21
-  },
-  "pipeline_47": {
-    "length": 117.66,
-    "nodes": 14
-  },
-  "pipeline_48": {
-    "length": 117.63,
-    "nodes": 9
-  },
-  "pipeline_49": {
-    "length": 111.36,
-    "nodes": 15
-  },
-  "pipeline_50": {
-    "length": 109.94,
-    "nodes": 15
-  },
-  "pipeline_51": {
-    "length": 109.63,
-    "nodes": 11
-  },
-  "pipeline_52": {
-    "length": 104.77,
-    "nodes": 16
-  },
-  "pipeline_53": {
-    "length": 99.66,
-    "nodes": 7
-  },
-  "pipeline_54": {
-    "length": 98.21,
-    "nodes": 13
-  },
-  "pipeline_55": {
-    "length": 97.87,
-    "nodes": 20
-  },
-  "pipeline_56": {
-    "length": 96.28,
-    "nodes": 16
-  },
-  "pipeline_57": {
-    "length": 92.04,
-    "nodes": 10
-  },
-  "pipeline_58": {
-    "length": 87.31,
-    "nodes": 6
-  },
-  "pipeline_59": {
-    "length": 83.7,
-    "nodes": 8
-  },
-  "pipeline_60": {
-    "length": 68.66,
-    "nodes": 6
-  },
-  "pipeline_61": {
-    "length": 60.41,
-    "nodes": 12
-  },
-  "pipeline_62": {
-    "length": 58.38,
-    "nodes": 4
-  },
-  "pipeline_63": {
-    "length": 56.66,
-    "nodes": 11
-  },
-  "pipeline_64": {
-    "length": 55.49,
-    "nodes": 12
-  },
-  "pipeline_65": {
-    "length": 55.24,
-    "nodes": 12
-  },
-  "pipeline_66": {
-    "length": 51.9,
-    "nodes": 4
-  },
-  "pipeline_67": {
-    "length": 51.21,
-    "nodes": 7
-  },
-  "pipeline_68": {
-    "length": 51.21,
-    "nodes": 7
-  },
-  "pipeline_69": {
-    "length": 50.41,
-    "nodes": 7
+    "length": 41.83,
+    "nodes": 2
   }
 }

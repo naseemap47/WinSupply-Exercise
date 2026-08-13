@@ -5,6 +5,8 @@ import csv
 import numpy as np
 from skimage.morphology import skeletonize
 import networkx as nx
+import argparse
+import os
 
 
 def cropped_polygon(
@@ -678,7 +680,7 @@ def draw_skeleton_overlay(
 
     return overlay
 
-def main(
+def process_sheet(
     image_path,
     csv_path,
     output_json,
@@ -749,21 +751,11 @@ def main(
 
     # Save debug images
     if debug_dir:
-
-        debug_dir = Path(debug_dir)
-        debug_dir.mkdir(
-            parents=True,
-            exist_ok=True
-        )
-
-        stem = Path(
-            image_path
-        ).stem
-
+        image_name = os.path.splitext(os.path.basename(image_path))[0]
         cv2.imwrite(
             str(
                 debug_dir /
-                f"01_{stem}_binary.png"
+                f"01_{image_name}_binary.png"
             ),
             binary
         )
@@ -771,7 +763,7 @@ def main(
         cv2.imwrite(
             str(
                 debug_dir /
-                f"02_{stem}_filled.png"
+                f"02_{image_name}_filled.png"
             ),
             filled
         )
@@ -779,7 +771,7 @@ def main(
         cv2.imwrite(
             str(
                 debug_dir /
-                f"03_{stem}_skeleton.png"
+                f"03_{image_name}_skeleton.png"
             ),
             skeleton.astype(
                 np.uint8
@@ -789,15 +781,81 @@ def main(
         cv2.imwrite(
             str(
                 debug_dir /
-                f"04_{stem}_overlay.png"
+                f"04_{image_name}_overlay.png"
             ),
             overlay
         )
 
-if __name__ == "__main__":
-    main(
-        image_path = "sheets/sheet_02.png",
-        csv_path="rois/sheet_02.csv",
-        output_json="runs/sheet_02.json",
-        debug_dir="debug"
+
+def main():
+    args = argparse.ArgumentParser(
+        description="Process mutilple engineering drawing"
     )
+    args.add_argument(
+        "--image-dir",
+        "-i",
+        type=str,
+        required=True,
+        help="Path to the input image directory"
+    )
+    args.add_argument(
+        "--csv-dir",
+        "-c",
+        type=str,
+        required=True,
+        help="Path to the input CSV directory"
+    )
+    args.add_argument(
+        "--output-dir",
+        "-o",
+        type=str,
+        required=True,
+        help="Path to the output directory"
+    )
+    args.add_argument(
+        "--debug-dir",
+        "-d",
+        type=str,
+        default=None,
+        help="Path to the debug directory"
+    )
+
+    args = args.parse_args()
+
+    image_dir = Path(args.image_dir)
+    csv_dir = Path(args.csv_dir)
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    debug_dir = Path(args.debug_dir) if args.debug_dir else None
+    if debug_dir is not None:
+        debug_dir.mkdir(parents=True, exist_ok=True)
+
+    images = list(image_dir.glob("*.png"))
+
+    if len(images) == 0:
+        raise FileNotFoundError(f"No images found in {image_dir}")
+
+    for image in images:
+        stem = image.stem
+        csv_path = csv_dir / f"{stem}.csv"
+        if not csv_path.exists():
+            raise FileNotFoundError(f"CSV not found for {image}")
+        output_json = output_dir / f"{stem}.json"
+        process_sheet(
+            image_path=image,
+            csv_path=csv_path,
+            output_json=output_json,
+            debug_dir=debug_dir
+        )
+        print(f"[INFO] Processed {image} successfully!")
+
+    print("[INFO] All images processed successfully!")
+
+if __name__ == "__main__":
+    # process_sheet(
+    #     image_path = "sheets/sheet_02.png",
+    #     csv_path="rois/sheet_02.csv",
+    #     output_json="runs/sheet_02.json",
+    #     debug_dir="debug"
+    # )
+    main()
